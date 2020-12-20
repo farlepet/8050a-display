@@ -1,0 +1,3 @@
+[submodule "lib/kendryte-standalone-sdk"]
+	path = lib/kendryte-standalone-sdk
+	url = https://github.com/kendryte/kendryte-standalone-sdk.git
