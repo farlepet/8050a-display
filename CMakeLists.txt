@@ -16,6 +16,11 @@ header_directories(inc/)
 add_subdirectory(lib/kendryte-standalone-sdk/lib)
 
 # compile project
-add_source_files(src/*.c src/*.s src/*.S src/*.cpp)
+FILE(GLOB_RECURSE PROJ_SRC
+    "src/*.c"
+    "src/*.s"
+    "src/*.S"
+    "src/*.cpp"
+)
+add_source_files(${PROJ_SRC})
 include(./lib/kendryte-standalone-sdk/cmake/executable.cmake)
-
