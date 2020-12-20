@@ -9,7 +9,7 @@
 
 static int core1_function(void *ctx) {
     NT35310 lcd(LCD_SPI_DEV, SPI_CHIP_SELECT_0,
-                LCD_GPIOHS_RST, LCD_GPIOHS_DC, LCD_GPIOHS_WR,
+                LCD_GPIOHS_RST, LCD_GPIOHS_DC,
                 LCD_WIDTH, LCD_HEIGHT);
     
     (void)ctx;
@@ -23,12 +23,12 @@ static int core1_function(void *ctx) {
     while(1) {
         msleep(250);
         gpio_set_pin(LED_GPIO_G, GPIO_PV_HIGH);
-        lcd.fillArea(RGB(255,0,0), 0, 0, 100, 101);
+        lcd.fillArea(RGB(255,0,0), 0, 0, 100, 100);
         msleep(250);
         gpio_set_pin(LED_GPIO_G, GPIO_PV_LOW);
-        lcd.fillArea(RGB(0,255,0), 50, 50, 151, 151);
+        lcd.fillArea(RGB(0,255,0), 50, 75, 150, 175);
         msleep(250);
-        lcd.fillArea(RGB(0,0,255), 100, 100, 201, 200);
+        lcd.fillArea(RGB(0,0,255), 100, 150, 200, 250);
     }
 }
 
