@@ -1,0 +1,18 @@
+Fluke 8050A LCD Display
+=======================
+
+The purpose of this project is to replace the old LCD from a Fluke 8050A, which
+is prone to both fading and blackening, with a modern LCD driven by a
+microcontroller, in this case a Kendryte K210. The LCD is a module using a
+NT35310 controller, in this case the LCD is one that came with the K210
+development board. ST7789-based LCDs might be compatible.
+
+The K210 is considerably overkill for this project, having two cores, a max
+clock speed of 800 MHz, and an AI accelerator that will go completely unused.
+It was simply something I had on hand, and it had some interesting features,
+such as very flexible GPIO mapping.
+
+The modification is relatively non-invasive, requiring simply tapping a number
+of signal lines - these can either be soldered to, or by piggy-backing off the
+Fluke's MCU socket - and removing the old LCD, which can be removed
+non-destructively and can be replaced at any time.
