@@ -39,6 +39,7 @@ private:
     uint8_t            decimal;    /*!< Position of decimal point, 0xFF in non-existant */
 
     float              value;      /*!< Last displayed numberical value */
+    float              relaPend;   /*!< Pending relative value */
     float              relative;   /*!< Last recorded value when relative mode was enabled */
 
     /**

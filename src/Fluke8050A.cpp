@@ -119,7 +119,10 @@ int Fluke8050A::st0Interrupt(void) {
     
     if(gpiohs_get_pin(this->pins.dp)) {
         if(!(this->status & FLUKE8050A_STATUS_REL)) {
-            this->relative = this->value;
+            /* It takes two cycles for relative to take effect, using relaPend
+             * ensures we store the correct value. */
+            this->relative = this->relaPend;
+            this->relaPend = this->value;
         }
         this->statusSet(FLUKE8050A_STATUS_REL);
     } else {
