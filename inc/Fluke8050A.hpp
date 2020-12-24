@@ -4,8 +4,6 @@
 #include <stdint.h>
 
 typedef struct {
-    uint8_t bp;   /*!< Display frequency/clock - Interrupt input */
-    
     uint8_t dp;   /*!< Decimal point / relative */
     uint8_t hv;   /*!< High Voltage */
 
@@ -48,10 +46,17 @@ private:
      */
     int convert(void);
 
-    int bpInterrupt(void);
+    int st0Interrupt(void);
+    int st1Interrupt(void);
 
 public:
     Fluke8050A(fluke_8050a_pins_t *pins);
+
+    void init(void);
+
+    float getValue(void);
+
+    void debug(void);
 };
 
 #endif
