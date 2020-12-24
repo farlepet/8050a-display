@@ -31,14 +31,15 @@ typedef enum {
 
 class Fluke8050A {
 private:
-    fluke_8050a_pins_t pins;     /*!< GPIOHS pins */
+    fluke_8050a_pins_t pins;        /*!< GPIOHS pins */
 
-    uint8_t            bcd[4];   /*!< BCD value of display. Left-most ones digit in status. */
-    uint8_t            status;   /*!< Status bits, see fluke_8050a_statue_e. */
-    uint8_t            decimal;  /*!< Position of decimal point, 0xFF in non-existant */
+    uint8_t            bcd[4];     /*!< BCD value of display. Left-most ones digit in status. */
+    uint8_t            status;     /*!< Status bits, see fluke_8050a_statue_e. */
+    uint8_t            statusPend; /*!< Pending status, used to prevent short glitches from messing up stored relative value.  */
+    uint8_t            decimal;    /*!< Position of decimal point, 0xFF in non-existant */
 
-    float              value;    /*!< Last displayed numberical value */
-    float              relative; /*!< Last recorded value when relative mode was enabled */
+    float              value;      /*!< Last displayed numberical value */
+    float              relative;   /*!< Last recorded value when relative mode was enabled */
 
     /**
      * Convert received and stored data into numerical value.
@@ -61,6 +62,20 @@ private:
      * decimal point position if applicable.
      */
     int st1Interrupt(void);
+
+    /**
+     * Set status bit, taking pending status into account.
+     * 
+     * @param mask Mask with bit to set
+     */
+    void statusSet(uint8_t mask);
+    
+    /**
+     * Clear status bit, taking pending status into account.
+     * 
+     * @param mask Mask with bit to clear
+     */
+    void statusClear(uint8_t mask);
 
 public:
     /**

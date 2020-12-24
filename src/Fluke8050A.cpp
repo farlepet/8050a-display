@@ -90,50 +90,65 @@ int Fluke8050A::convert(void) {
     return 0;
 }
 
+void Fluke8050A::statusSet(uint8_t mask) {
+    if(this->statusPend & mask) {
+        this->status     |= mask;
+    } else {
+        this->statusPend |= mask;
+    }
+}
+
+void Fluke8050A::statusClear(uint8_t mask) {
+    if(!(this->statusPend & mask)) {
+        this->status     &= ~mask;
+    } else {
+        this->statusPend &= ~mask;
+    }
+}
+
 int Fluke8050A::st0Interrupt(void) {
     /* TODO: Potentially optimize this, the gpiohs_get_pin call goes four
      * functions deep to get the value. May-or-may-not be optimized out though. */
     
     /* Status indicators */
     if(gpiohs_get_pin(this->pins.hv)) {
-        this->status |=  FLUKE8050A_STATUS_HV;
+        this->statusSet(FLUKE8050A_STATUS_HV);
     } else {
-        this->status &= ~FLUKE8050A_STATUS_HV;
+        this->statusClear(FLUKE8050A_STATUS_HV);
     }
     
     if(gpiohs_get_pin(this->pins.dp)) {
         if(!(this->status & FLUKE8050A_STATUS_REL)) {
             this->relative = this->value;
         }
-        this->status |=  FLUKE8050A_STATUS_REL;
+        this->statusSet(FLUKE8050A_STATUS_REL);
     } else {
-        this->relative = 0;
-        this->status &= ~FLUKE8050A_STATUS_REL;
+        this->statusClear(FLUKE8050A_STATUS_REL);
     }
 
 
     if(gpiohs_get_pin(this->pins.w)) {
-        this->status |=  FLUKE8050A_STATUS_NEG;
+        this->statusSet(FLUKE8050A_STATUS_NEG);
     } else {
-        this->status &= ~FLUKE8050A_STATUS_NEG;
+        this->statusClear(FLUKE8050A_STATUS_NEG);
     }
     
     if(gpiohs_get_pin(this->pins.x)) {
-        this->status |=  FLUKE8050A_STATUS_POS;
+        this->statusSet(FLUKE8050A_STATUS_POS);
     } else {
-        this->status &= ~FLUKE8050A_STATUS_POS;
+        this->statusClear(FLUKE8050A_STATUS_POS);
     }
     
     if(gpiohs_get_pin(this->pins.y)) {
-        this->status |=  FLUKE8050A_STATUS_DB;
+        this->statusSet(FLUKE8050A_STATUS_DB);
     } else {
-        this->status &= ~FLUKE8050A_STATUS_DB;
+        this->statusClear(FLUKE8050A_STATUS_DB);
     }
     
     if(gpiohs_get_pin(this->pins.z)) {
-        this->status |=  FLUKE8050A_STATUS_ONE;
+        this->statusSet(FLUKE8050A_STATUS_ONE);
     } else {
-        this->status &= ~FLUKE8050A_STATUS_ONE;
+        this->statusClear(FLUKE8050A_STATUS_ONE);
     }
 
     return 0;
