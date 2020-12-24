@@ -8,6 +8,19 @@
 #include <NT35310.hpp>
 #include <Fluke8050A.hpp>
 
+/*
+ * Core utilization:
+ * 
+ * Core 0:
+ *   Initial GPIO initialization
+ *   8050A hardware interaction
+ *   Necessary numerical conversion
+ * 
+ * Core 1:
+ *   LCD control
+ *   8050A value display
+ */
+
 static int core1_function(void *ctx) {
     NT35310 lcd(LCD_SPI_DEV, SPI_CHIP_SELECT_0,
                 LCD_GPIOHS_RST, LCD_GPIOHS_DC,
@@ -19,7 +32,6 @@ static int core1_function(void *ctx) {
 
     lcd.init();
     lcd.fill(RGB(0,0,0));
-    lcd.setBrightness(255);
 
     while(1) {
         msleep(250);

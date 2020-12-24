@@ -62,15 +62,6 @@ void NT35310::reset(void) {
     msleep(20);
 }
 
-void NT35310::setBrightness(uint8_t val) {
-    uint8_t data = 0x20;
-    this->command(NT35310_CMD_WRCTRLD);
-    this->write8(&data, 1);
-    
-    this->command(NT35310_CMD_WRDISBV);
-    this->write8(&val, 1);
-}
-
 void NT35310::setArea(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
     uint8_t data[4];
 
@@ -107,9 +98,9 @@ void NT35310::fill(uint32_t color) {
 
 void NT35310::RGB2Buffer(void *dest, const void *src, size_t len) {
     for(size_t i = 0; i < len; i++) {
-        uint8_t *rgb = (uint8_t *)(src + (i * 3));
+        uint8_t *rgb = (uint8_t *)((uintptr_t)src + (i * 3));
 #if (NT35310_18BIT_COLOR)
-        uint8_t *d24 = ((uint8_t *)(dest + (i * 3)));
+        uint8_t *d24 = ((uint8_t *)((uintptr_t)dest + (i * 3)));
         d24[0] = rgb[0] & 0xFC;
         d24[1] = rgb[1] & 0xFC;
         d24[2] = rgb[2] & 0xFC;

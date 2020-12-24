@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdio.h>
+#include <cmath>
 
 #include <gpiohs.h>
 
@@ -36,12 +37,15 @@ void Fluke8050A::init(void) {
 }
 
 float Fluke8050A::getValue(void) {
-    float div = 1;
-    for(uint8_t i = 3; i > this->decimal; i--) {
-        div *= 10;
-    }
+    return this->value;
+}
 
-    return (float)(this->value / div);
+float Fluke8050A::getRelative(void) {
+    if(this->status & FLUKE8050A_STATUS_REL) {
+        return this->relative;
+    } else {
+        return NAN;
+    }
 }
 
 void Fluke8050A::debug(void) {
@@ -49,7 +53,10 @@ void Fluke8050A::debug(void) {
            this->bcd[3], this->bcd[2],
            this->bcd[1], this->bcd[0],
            this->status,
-           this->getValue());
+           this->value);
+    if(this->status & FLUKE8050A_STATUS_REL) {
+        printf("                           Rel: %+5.02f\r\n", this->relative);
+    }
 }
 
 int Fluke8050A::convert(void) {
@@ -72,7 +79,13 @@ int Fluke8050A::convert(void) {
          * thus NEG+POS lines will create a positive sign. */
         val = -val;
     }
-    this->value = val;
+    
+    float div = 1;
+    for(uint8_t i = 3; i > this->decimal; i--) {
+        div *= 10;
+    }
+
+    this->value = (float)val / div;
 
     return 0;
 }
@@ -89,8 +102,12 @@ int Fluke8050A::st0Interrupt(void) {
     }
     
     if(gpiohs_get_pin(this->pins.dp)) {
+        if(!(this->status & FLUKE8050A_STATUS_REL)) {
+            this->relative = this->value;
+        }
         this->status |=  FLUKE8050A_STATUS_REL;
     } else {
+        this->relative = 0;
         this->status &= ~FLUKE8050A_STATUS_REL;
     }
 
